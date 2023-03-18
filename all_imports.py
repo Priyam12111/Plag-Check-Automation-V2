@@ -190,10 +190,7 @@ def wait(xpth):  # Selenium wait method
 
 
 def writenme(cys, nme):
-    time.sleep(2)
-    # This is for window na
-    # me
-    # win32gui.GetWindowText (win32gui.GetForegroundWindow())
+    sleep(1.2)
     shell = win32com.client.Dispatch('WScript.Shell')
     hWnd = win32gui.FindWindow(None, cys)
 
@@ -204,4 +201,3 @@ def writenme(cys, nme):
         pass
     shell.SendKeys(nme)
     shell.SendKeys('{Enter}')
-

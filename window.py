@@ -34,84 +34,71 @@ def uploadfile(text):
     # Now we OPEN The links
     tab(0)
     i = int(text)
-    prIndex = []
     print('[Tab]:', text)
-    try:
-        if len(os.listdir('D:\Plag\plagdir')) != 0:
-            for sim in range(int(getVars(3))):
-                prcheckd = driver.find_elements(by=By.CLASS_NAME,value=f'similarity')[sim].get_attribute('innerText')
-                if prcheckd == 'Processing':
-                    prIndex.append(sim)
-    except:
-        pass
-
-    # print(prIndex)
+    
     while i <= int(getVars(3)):
         if len(os.listdir('D:\Plag\plagdir')) != 0:
             try:
                 # Here i means the Section number
-                if i in prIndex or not prIndex:
-                    Unid = int(box[i-1])
+        
+                Unid = int(box[i-1])
 
-                    driver.get(
-                        f'https://www.turnitin.com/t_submit.asp?r=82.0021475055917&svr=55&lang=en_us&aid={Unid}')
-                    sleep(3)
+                driver.get(
+                    f'https://www.turnitin.com/t_submit.asp?r=82.0021475055917&svr=55&lang=en_us&aid={Unid}')
+                sleep(3)
 
-                    # Selecting a file
-                    driver.find_element(
-                        by=By.XPATH, value=f'//*[@id="choose-file-btn"]').click()
-                    path = os.listdir('D:\Plag\plagdir')[0]
-                    minize()
+                # Selecting a file
+                driver.find_element(
+                    by=By.XPATH, value=f'//*[@id="choose-file-btn"]').click()
+                path = os.listdir('D:\Plag\plagdir')[0]
 
-                    writenme('Open', path)
-                    wait('//*[@id="selected-file-name"]')
-                    file = driver.find_element(
-                        by=By.XPATH, value=f'//*[@id="selected-file-name"]').get_attribute('innerText')
-                    wait('//*[@id="title"]')
-                    driver.find_element(
-                        by=By.XPATH, value=f'//*[@id="title"]').send_keys(file.removesuffix('.docx'))
-                    sleep(2)
-                    wait('//*[@id="upload-btn"]')
-                    driver.find_element(
-                        by=By.XPATH, value=f'//*[@id="upload-btn"]').click()
+                writenme('Open', path)
+                wait('//*[@id="selected-file-name"]')
+                file = driver.find_element(
+                    by=By.XPATH, value=f'//*[@id="selected-file-name"]').get_attribute('innerText')
+                wait('//*[@id="title"]')
+                driver.find_element(
+                    by=By.XPATH, value=f'//*[@id="title"]').send_keys(file.removesuffix('.docx'))
+                sleep(2)
+                wait('//*[@id="upload-btn"]')
+                driver.find_element(
+                    by=By.XPATH, value=f'//*[@id="upload-btn"]').click()
 
-                    try:
-                        wait('//*[@id="submission-metadata-assignment"]')
-                    except Exception:
-                        break
+                try:
+                    wait('//*[@id="submission-metadata-assignment"]')
+                except Exception:
+                    break
 
-                    ###################################################
-                    Slot_title = driver.find_element(
-                        by=By.XPATH, value=f'//*[@id="submission-metadata-assignment"]').get_attribute('innerText').capitalize()
-                    submit_title = driver.find_element(
-                        by=By.XPATH, value=f'//*[@id="submission-metadata-title"]').get_attribute('innerText')
-                    a = os.listdir('D:\Plag\plagdir')
-                    print(
-                        f'[Info]: {submit_title},{Slot_title},Remaining_file: {len(a)}')
-                    csvwr(f'{submit_title},{Slot_title}')
-                    wrreplace('D:\Plag\Vars.txt', getVars(1), Slot_title)
-                    try:
-                        with open('report.txt','w') as f:
-                            f.write(f'{submit_title},{Slot_title},Remaining_file: {len(a)}')
-                            f.close()
-                    except:
-                        pass
-                    ###################################################
-
-                    WebDriverWait(driver, 250).until(
-                        EC.element_to_be_clickable((By.XPATH, '//*[@id="confirm-btn"]')))
-                    driver.find_element(
-                        by=By.XPATH, value=f'//*[@id="confirm-btn"]').click()
-                    os.remove(f"D:\Plag\plagdir\{path}")
-                    sleep(1)
-                    WebDriverWait(driver, 25).until(
-                        EC.element_to_be_clickable((By.XPATH, '//*[@id="close-btn"]')))
-                    if i == int(getVars(3)):
-                        i = 0
-                else:
-                    print(f"[Info]: Slot [{i}] is Processing")
+                ###################################################
+                Slot_title = driver.find_element(
+                    by=By.XPATH, value=f'//*[@id="submission-metadata-assignment"]').get_attribute('innerText').capitalize()
+                submit_title = driver.find_element(
+                    by=By.XPATH, value=f'//*[@id="submission-metadata-title"]').get_attribute('innerText')
+                a = os.listdir('D:\Plag\plagdir')
+                print(
+                    f'[Info]: {submit_title},{Slot_title},Remaining_file: {len(a)}')
+                csvwr(f'{submit_title},{Slot_title}')
+                wrreplace('D:\Plag\Vars.txt', getVars(1), Slot_title)
+                try:
+                    with open('report.txt','w') as f:
+                        f.write(f'{submit_title},{Slot_title},Remaining_file: {len(a)}')
+                        f.close()
+                except:
+                    pass
+                ###################################################
+                WebDriverWait(driver, 250).until(
+                    EC.element_to_be_clickable((By.XPATH, '//*[@id="confirm-btn"]')))
+                driver.find_element(
+                    by=By.XPATH, value=f'//*[@id="confirm-btn"]').click()
+                os.remove(f"D:\Plag\plagdir\{path}")
+                sleep(1)
+                WebDriverWait(driver, 25).until(
+                    EC.element_to_be_clickable((By.XPATH, '//*[@id="close-btn"]')))
+                if i == int(getVars(3)):
+                    i = 0
             except:
-                pass
+                print('[Error in line ({})]: '.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+
         else:
             try:
                 sleep(2)
@@ -206,11 +193,17 @@ def uploadfile_long(text):
                     pass
 
                 # Selecting a file
+                hWndT = win32gui.FindWindow(None, 'Turnitin - Google Chrome')
+
+                try:
+                    win32gui.ShowWindow(hWndT, 5)
+                    win32gui.SetForegroundWindow(hWndT)
+                except Exception:
+                    pass
                 driver.find_element(
                     by=By.XPATH, value=f'//*[@id="choose-file-btn"]').click()
                 path = os.listdir('D:\Plag\plagdir')[0]
 
-                minize()
                 writenme('Open', path)
                 wait('//*[@id="selected-file-name"]')
                 file = driver.find_element(
@@ -270,19 +263,12 @@ def uploadfile_long(text):
         i += 1
 
 
-def minize():
-    # sleep(1)
-    name_f_win = win32gui.GetWindowText(win32gui.GetForegroundWindow())
-    if name_f_win != 'Open' and name_f_win != 'Turnitin - Google Chrome':
-        Minimize = win32gui.FindWindow(None, name_f_win)
-        win32gui.ShowWindow(Minimize, win32con.SW_MINIMIZE)
-
 
 def Download_plag():
     i = 1  # Loop
     j = 1  # Iter in excel
 
-    while i < int(getVars(3))+2:
+    while i < 120:
         try:
             # Open plag.csv and get percentage or Slot of file
             with open(csv_path) as f:
@@ -322,7 +308,7 @@ def Download_plag():
                             by=By.XPATH, value='/html/body/div/header/h1/span[2]').get_attribute('innerHTML')
                         try:
                             percentag = driver.find_element(
-                                by=By.XPATH, value='/html/body/div/div[1]/aside/div[1]/section[2]/div[2]/div[1]/label').get_attribute('innerHTML')
+                                by=By.XPATH, value='/html/body/div[5]/div[1]/aside/div[1]/section[2]/div[2]/div[1]/label').get_attribute('innerHTML')
                             percentage = '{0}%'.format(percentag)
                             if len(percentag) != 0:
                                 wrreplace(csv_path, file_sot,
