@@ -35,12 +35,12 @@ def uploadfile(text):
     tab(0)
     i = int(text)
     print('[Tab]:', text)
-    
+
     while i <= int(getVars(3)):
         if len(os.listdir('D:\Plag\plagdir')) != 0:
             try:
                 # Here i means the Section number
-        
+
                 Unid = int(box[i-1])
 
                 driver.get(
@@ -80,8 +80,9 @@ def uploadfile(text):
                 csvwr(f'{submit_title},{Slot_title}')
                 wrreplace('D:\Plag\Vars.txt', getVars(1), Slot_title)
                 try:
-                    with open('report.txt','w') as f:
-                        f.write(f'{submit_title},{Slot_title},Remaining_file: {len(a)}')
+                    with open('report.txt', 'w') as f:
+                        f.write(
+                            f'{submit_title},{Slot_title},Remaining_file: {len(a)}')
                         f.close()
                 except:
                     pass
@@ -97,7 +98,8 @@ def uploadfile(text):
                 if i == int(getVars(3)):
                     i = 0
             except:
-                print('[Error in line ({})]: '.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+                print('[Error in line ({})]: '.format(
+                    sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
         else:
             try:
@@ -109,7 +111,7 @@ def uploadfile(text):
             sleep(2)
             if getVars(2) == 'y':
                 try:
-                    with open('report.txt','w') as f:
+                    with open('report.txt', 'w') as f:
                         f.write('File Uploaded now downloading them')
                         f.close()
                 except:
@@ -227,12 +229,14 @@ def uploadfile_long(text):
                 submit_title = driver.find_element(
                     by=By.XPATH, value=f'//*[@id="submission-metadata-title"]').get_attribute('innerText')
                 a = os.listdir('D:\Plag\plagdir')
-                print(f'[Info]: {submit_title},{Slot_title},Remaining_file: {len(a)}')
+                print(
+                    f'[Info]: {submit_title},{Slot_title},Remaining_file: {len(a)}')
                 csvwr(f'{submit_title},{Slot_title}')
                 wrreplace('D:\Plag\Vars.txt', getVars(1), Slot_title)
                 try:
-                    with open('report.txt','w') as f:
-                        f.write(f'{submit_title},{Slot_title},Remaining_file: {len(a)}')
+                    with open('report.txt', 'w') as f:
+                        f.write(
+                            f'{submit_title},{Slot_title},Remaining_file: {len(a)}')
                         f.close()
                 except:
                     pass
@@ -263,94 +267,123 @@ def uploadfile_long(text):
         i += 1
 
 
-
 def Download_plag():
-    i = 1  # Loop
-    j = 1  # Iter in excel
+    # i starts from 2
 
-    while i < 120:
-        try:
-            # Open plag.csv and get percentage or Slot of file
-            with open(csv_path) as f:
-                serch = f.readlines()[j-1].split(',')[1]
-                f.close()
-            if serch == 'Downloaded':
-                stats = 'Checked'
-            else:
-                stats = 'Not checked'
-            if stats != 'Checked':
-                search = int(''.join(x for x in serch if x.isdigit()))
-                tab(0)
-                file_sot = driver.find_element(
-                    by=By.XPATH, value=f'/html/body/div[2]/div[4]/div[2]/div[2]/div[4]/table/tbody/tr[{search+1}]/td[1]').get_attribute('innerText').capitalize()
-                # Iter in TUrnitin of slots bvalue only
-                file_slot = int(''.join(x for x in file_sot if x.isdigit()))
-                if search != 0:
-                    if search == file_slot:
-                        actions = ActionChains(driver)
-                        biew = driver.find_element(
-                            by=By.XPATH, value=f'/html/body/div[2]/div[4]/div[2]/div[2]/div[4]/table/tbody/tr[{search+1}]/td[5]/a[2]')
-                        actions.key_down(Keys.CONTROL).click(biew).key_up(
-                            Keys.CONTROL).perform()  # Clicks on view to download
-                        sleep(1)
-                        tab(1)
-                        WebDriverWait(driver, 100).until(EC.presence_of_element_located(
-                            (By.XPATH, '/html/body/div/div[1]/aside/div[1]/section[4]/div/div[1]')))
+    # Click on my grades
+    driver.find_element(
+        by=By.XPATH, value=f'/html/body/div[2]/div[4]/div[1]/ul/li[2]/a').click()
+    sleep(1)
+    # Loop starts from here
+    for resttt in range(2):
+        j = 1
+        k = 0
+        last = 2
+        kd = 0
+        for i in range(2, 100):
+            tab(0)
+            try:
+                with open(csv_path) as f:
+                    serch = f.readlines()[k].split(',')[1]
+                    f.close()
 
-                        driver.find_element(
-                            by=By.XPATH, value='/html/body/div/div[1]/aside/div[1]/section[4]/div/div[1]').click()
-                        WebDriverWait(driver, 100).until(EC.presence_of_element_located(
-                            (By.XPATH, '/html/body/div[7]/div[2]/div[2]/div/div[1]/div[2]')))
-                        sleep(5)
-                        findxpth(
-                            '/html/body/div[7]/div[2]/div[2]/div/div[1]/div[2]').click()
-                        nmeoffile = driver.find_element(
-                            by=By.XPATH, value='/html/body/div/header/h1/span[2]').get_attribute('innerHTML')
-                        try:
-                            percentag = driver.find_element(
-                                by=By.XPATH, value='/html/body/div[5]/div[1]/aside/div[1]/section[2]/div[2]/div[1]/label').get_attribute('innerHTML')
-                            percentage = '{0}%'.format(percentag)
-                            if len(percentag) != 0:
-                                wrreplace(csv_path, file_sot,
-                                            f'Downloaded,{file_sot},{percentage}')
-                                WebDriverWait(driver, 100).until(EC.invisibility_of_element(
-                                    (By.XPATH, '/html/body/div[7]/div[2]/div[1]/div')))
-                                sleep(1)
-                        except Exception:
-                            percentage = 'Processing'
-                        if percentag == '':
-                            percentage = 'Processing'
-                        print(f'[Info]: Downloading [{search}]: {nmeoffile} - {percentage}')
-
-                        try:
-                            with open('report.txt','w') as f:
-                                f.write(f'Downloading [{search}]: {nmeoffile} - {percentage}')
-                                f.close()
-                        except:
-                            pass
-                        j += 1
-                    else:
-                        print(f'[Slot Target]: {search} {file_slot}')
+                if serch == 'Downloaded':
+                    stats = 'Checked'
                 else:
-                    j += 1
-            else:
+                    stats = 'Not checked'
+                    search = int(''.join(x for x in serch if x.isdigit()))
 
-                j += 1
-        except Exception as e:
-            # print(e)
-            if len(driver.window_handles) == 2:
-                driver.close()
-            break
-        i += 1
+                    # Choose tab
+                    view_element = driver.find_element(
+                        by=By.XPATH, value=f'/html/body/div[2]/div[4]/div[2]/div[3]/form/div/div[2]/table/tbody/tr[{search+1}]/td[8]/a')
+                    actions = ActionChains(driver)
+                    actions.key_down(Keys.CONTROL).click(view_element).key_up(
+                        Keys.CONTROL).perform()  # Clicks on view to download
+                    print(f"Tab: {search}")
+                    sleep(0.12)
+                    driver.execute_script("window.scrollBy(0, 100);")
 
+                    last += 1
+            except:
+                break
+            k += 1
+        for i in range(2, 100):
+            try:
+                with open(csv_path) as f:
+                    serch = f.readlines()[kd].split(',')[1]
+                    f.close()
+                if serch != "Downloaded":
+                    search = int(''.join(x for x in serch if x.isdigit()))
+                    file_sot = serch.replace("\n", "")
+                    try:
+                        tab(j)
+                        # print("Tab:",j)
+                        j += 1
+                    except:
+                        break
+                    # Wait and click download button but after confirming Processing
 
-# After downloading files we try to make archive of it but fst we move all old downloaded files to diffrent folder
+                    try:
+                        WebDriverWait(driver, 20).until(EC.element_to_be_clickable(
+                            (By.XPATH, '/html/body/div[5]/div[1]/aside/div[1]/section[2]/div[2]/div[1]/label')))
+                        # print("BREAKING")
+                        percentag = driver.find_element(
+                            by=By.XPATH, value='/html/body/div[5]/div[1]/aside/div[1]/section[2]/div[2]/div[1]/label').get_attribute('innerText')
+                        percentage = '{0}%'.format(percentag)
+                        if len(percentag) != 0:
+                            wrreplace(csv_path, file_sot,
+                                    f'Downloaded,{file_sot},{percentage}')
+                            # WebDriverWait(driver, 100).until(EC.invisibility_of_element((By.XPATH, '/html/body/div[7]/div[2]/div[1]/div')))
+                            sleep(0.5)
 
+                    except Exception as e:
+                        print('[Error in line ({})]: '.format(
+                            sys.exc_info()[-1].tb_lineno))
+                        percentage = 'Processing'
+
+                        continue
+
+                    if percentag == '':
+                        percentage = 'Processing'
+
+                    WebDriverWait(driver, 100).until(EC.presence_of_element_located(
+                        (By.XPATH, '/html/body/div/div[1]/aside/div[1]/section[4]/div/div[1]')))
+                    driver.find_element(
+                        by=By.XPATH, value='/html/body/div/div[1]/aside/div[1]/section[4]/div/div[1]').click()
+
+                    # Choose current view
+                    WebDriverWait(driver, 100).until(EC.presence_of_element_located(
+                        (By.XPATH, '/html/body/div[7]/div[2]/div[2]/div/div[1]/div[2]')))
+                    sleep(0.5)
+                    findxpth(
+                        '/html/body/div[7]/div[2]/div[2]/div/div[1]/div[2]').click()
+
+                    # Name of file
+                    nmeoffile = driver.find_element(
+                        by=By.XPATH, value='/html/body/div/header/h1/span[2]').get_attribute('innerHTML')
+
+                    # Written work
+                    print(
+                        f'[Info]: Downloading [{search}]: {nmeoffile} - {percentage}')
+
+                    try:
+                        with open('report.txt', 'w') as f:
+                            f.write(
+                                f'Downloading [{search}]: {nmeoffile} - {percentage}')
+                            f.close()
+                    except:
+                        pass
+
+            except:
+                break
+            kd += 1
+    # After downloading files we try to make archive of it but fst we move all old downloaded files to diffrent folder
     try:
-        sleep(8)
+        sleep(20)
         try:
             # Move Zip (if avail) to Rbin
-            move(r'D:\Plag\Download\Download.zip',r'D:\Code\Acade Projects\Django Project\Plagzip\plagzip\static\Download.zip')
+            move(r'D:\Plag\Download\Download.zip',
+                r'D:\Code\Acade Projects\Django Project\Plagzip\plagzip\static\Download.zip')
         except Exception:
             pass
 
@@ -360,10 +393,9 @@ def Download_plag():
                 with zipfile.ZipFile(r'D:\Plag\Download\Download.zip', 'w', zipfile.ZIP_DEFLATED) as zipf:
                     zipdir('D:\Plag\Download', zipf)
 
-                    
                 sleep(1)
                 try:
-                    with open('report.txt','w') as f:
+                    with open('report.txt', 'w') as f:
                         f.write('File checked please download them')
                         f.close()
                 except:
@@ -375,7 +407,7 @@ def Download_plag():
     except Exception:
         print("[Warning]: Files can't be zipped!")
 
-    
+
 def login():
     try:
         print('[Info]: Logging in..')
@@ -404,12 +436,15 @@ def login():
                 except Exception:
                     pass
             try:
-                driver.find_element(by=By.XPATH, value=f'/html/body/div[2]/form/div[2]/div[3]/div/div[2]/table/tbody/tr[{k}]/td[2]/a').click()
+                driver.find_element(
+                    by=By.XPATH, value=f'/html/body/div[2]/form/div[2]/div[3]/div/div[2]/table/tbody/tr[{k}]/td[2]/a').click()
             except:
                 try:
-                    driver.find_element(by=By.XPATH,value=f'/html/body/div[2]/form/div[2]/div[3]/div/div[2]/table/tbody/tr[2]/td[2]/a').click()
+                    driver.find_element(
+                        by=By.XPATH, value=f'/html/body/div[2]/form/div[2]/div[3]/div/div[2]/table/tbody/tr[2]/td[2]/a').click()
                 except:
-                    driver.find_element(by=By.XPATH,value=f'/html/body/div[2]/form/div[2]/div[3]/div/div[2]/table/tbody/tr[1]/td[2]/a').click()
+                    driver.find_element(
+                        by=By.XPATH, value=f'/html/body/div[2]/form/div[2]/div[3]/div/div[2]/table/tbody/tr[1]/td[2]/a').click()
 
         except Exception:
             pass
@@ -446,7 +481,8 @@ try:
     try:
         pagei = driver.find_element(
             by=By.XPATH, value='/html/body/div[2]/div[4]/div[2]/div[2]/div[4]/table/tbody/tr[2]/td[2]/button').get_attribute('id')
-        pageid = ''.join(x for x in pagei if x.isdigit())  # This is for integer only
+        pageid = ''.join(x for x in pagei if x.isdigit()
+                         )  # This is for integer only
     except Exception:
         print('[Info]: Not on main Page')
         pagei = driver.current_url
