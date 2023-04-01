@@ -273,9 +273,9 @@ def uploadfile_long(text):
 
 
 def Download_plag():
-    i = 1  # Loop
-    j = 1  # Iter in excel
     for x in range(2):
+        i = 1  # Loop
+        j = 1  # Iter in excel
         while i < int(getVars(3))+2:
             try:
                 # Open plag.csv and get percentage or Slot of file
@@ -451,9 +451,6 @@ try:
         else:
             sl = 'Plag Check'
 
-    elif getVars(2) == '':
-        sl = pg.confirm(text=f'Choose Job[{int(getSlotnum())+1}]', title='Choose Job: ',
-                        buttons=['Plag Check', 'Report', 'Download', 'Find Files'])
     else:
         sl = getVars(2)
 

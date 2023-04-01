@@ -188,7 +188,7 @@ def wait(xpth):  # Selenium wait method
 
 
 def writenme(cys, nme):
-    sleep(1.2)
+    sleep(1.5)
     shell = win32com.client.Dispatch('WScript.Shell')
     hWnd = win32gui.FindWindow(None, cys)
 
