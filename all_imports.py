@@ -101,7 +101,7 @@ def findxpth(xpath):
 
 def getCsv(lines):#Return Any Line of plag.csv
     with open(csv_path,'r') as f:
-        return f.readlines(0)[lines].split(',')[1].removesuffix('\n')
+        return f.readlines()[lines].split(',')[1].removesuffix('\n')
 
 def plagfileslot(i):
     file_slot = driver.find_element(by=By.XPATH,value=f'/html/body/div[2]/div[4]/div[2]/div[2]/div[3]/table/tbody/tr[{i+1}]/td[1]').get_attribute('innerText')
@@ -185,6 +185,10 @@ def csvwr(cont):  # Updating the vars and Slots
 
 def wait(xpth):  # Selenium wait method
     return WebDriverWait(driver, 100).until(EC.element_to_be_clickable((By.XPATH, xpth)))
+
+
+def swait(xpth):  # Selenium wait method
+    return WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, xpth)))
 
 
 def writenme(cys, nme):

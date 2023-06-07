@@ -276,6 +276,7 @@ def Download_plag():
     for x in range(2):
         i = 1  # Loop
         j = 1  # Iter in excel
+        driver.implicitly_wait(7)
         while i < int(getVars(3))+2:
             try:
                 # Open plag.csv and get percentage or Slot of file
@@ -302,15 +303,18 @@ def Download_plag():
                             actions.key_down(Keys.CONTROL).click(biew).key_up(
                                 Keys.CONTROL).perform()  # Clicks on view to download
                             tab(1)
-                            sleep(4)
+                            sleep(2)
                             try:
+                                swait('/html/body/div[6]/div[1]/aside/div[1]/section[4]/div/div[1]')
                                 driver.find_element(
                                     by=By.XPATH, value='/html/body/div[6]/div[1]/aside/div[1]/section[4]/div/div[1]').click()
                             except:
                                 try:
+                                    swait('/html/body/div[5]/div[1]/aside/div[1]/section[4]/div/div[1]')
                                     driver.find_element(
                                         by=By.XPATH, value='/html/body/div[5]/div[1]/aside/div[1]/section[4]/div/div[1]').click()
                                 except:
+                                    driver.close()
                                     break
                                 
 
@@ -320,19 +324,27 @@ def Download_plag():
                                     '/html/body/div[8]/div[2]/div[2]/div/div[1]').click()
                             except:
                                 findxpth('/html/body/div[7]/div[2]/div[2]/div/div[1]').click()
+                            # driver.implicitly_wait(0)
+
                             try:
                                 nmeoffile = driver.find_element(by=By.XPATH, value='/html/body/div[6]/header/h1/span[2]').get_attribute('innerHTML')
                             except Exception:
-                                nmeoffile = driver.find_element(by=By.XPATH, value='/html/body/div[5]/header/h1/span[2]').get_attribute('innerHTML')
+                                try:
+                                    nmeoffile = driver.find_element(by=By.XPATH, value='/html/body/div[5]/header/h1/span[2]').get_attribute('innerHTML')
+                                except Exception:
+                                    nmeoffile = "UNKNOWN"
                                 
                             try:
-                                WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[1]/aside/div[1]/section[2]/div[2]/div[1]/label')))
-                                percentag = driver.find_element(
-                                    by=By.XPATH, value='/html/body/div[5]/div[1]/aside/div[1]/section[2]/div[2]/div[1]/label').get_attribute('innerHTML')
+                                sleep(4)
+                                # WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[5]/div[1]/aside/div[1]/section[2]/div[2]/div[1]/label')))
+                                try:
+                                    percentag = driver.find_element(by=By.ID,value=f'sc5044-label').get_attribute('innerHTML')
+                                except Exception:
+                                    percentag = driver.find_element(by=By.XPATH, value='/html/body/div[5]/div[1]/aside/div[1]/section[2]/div[2]/div[1]/label').get_attribute('innerHTML')
                                 percentage = '{0}%'.format(percentag)
                                 if len(percentag) != 0:
-                                    wrreplace(csv_path, file_sot,
-                                              f'Downloaded,{file_sot},{percentage}')
+                                    wrreplace(csv_path, file_sot,f'Downloaded,{file_sot},{percentage}')
+                                    sleep(1)
                                     WebDriverWait(driver, 100).until(EC.invisibility_of_element(
                                         (By.XPATH, '/html/body/div[8]/div[2]/div[1]/div')))
                                     sleep(4)
@@ -384,9 +396,11 @@ def Download_plag():
 
     except Exception:
         print("[Warning]: Files can't be zipped!")
-
+    
 
 def login():
+    driver.implicitly_wait(1)
+
     try:
         print('[Info]: Logging in..')
         try:
@@ -395,7 +409,7 @@ def login():
         except Exception:
             pass
         try:
-            Wait('//*[@id="ibox_form_body"]/div[3]/input')
+
             driver.find_element(
                 by=By.XPATH, value='//*[@id="ibox_form_body"]/div[3]/input').click()
         except Exception:
@@ -409,8 +423,6 @@ def login():
                     print('[Opening]:', ntp)
                     if ntp == getVars(4):
                         break
-                    Wait(
-                        f'/html/body/div[2]/form/div[2]/div[3]/div/div[2]/table/tbody/tr[{k}]/td[2]/a')
                 except Exception:
                     pass
             try:
