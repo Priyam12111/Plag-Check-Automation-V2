@@ -1,2 +1,7 @@
-# Plag-Check-for-2
-This code is make to Plag check only for 2 dollers
+# Plag-Check-Automation-V2
+STEP 1: Download this git
+STEP 2: Run window.py using
+```bash
+python window.py
+```
+That's ALL! HAVE FUN !!
